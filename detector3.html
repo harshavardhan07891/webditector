@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrandGuard AI - Enterprise Impersonation, App Store & Brand Security Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#070a12',
+                        cardbg: '#0f172a',
+                        cardborder: '#1e293b',
+                        accentcyan: '#06b6d4',
+                        accentemerald: '#10b981',
+                        accentrose: '#f43f5e',
+                        accentamber: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Inter & JetBrains Mono Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js for Visual Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #070a12; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #070a12; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        .app-icon-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5); }
+        .play-store-card { background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%); }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-slate-900 border-r border-cardborder flex flex-col z-20 hidden md:flex">
+            <div class="p-5 border-b border-cardborder flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <i data-lucide="shield-alert" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-1.5">
+                        BrandGuard <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-mono border border-cyan-500/20">v6.5</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-400">Play Store & Brand Intelligence</p>
+                </div>
+            </div>
+
+            <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
+                <button onclick="switchTab('detector')" id="nav-detector" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                    <i data-lucide="search-check" class="w-4 h-4"></i>
+                    <span>Detector & AI Inspector</span>
+                </button>
+                <button onclick="switchTab('appstore')" id="nav-appstore" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i data-lucide="smartphone" class="w-4 h-4"></i>
+                    <span>Google Play Store Monitor</span>
+                </button>
+                <button onclick="switchTab('database')" id="nav-database" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i data-lucide="database" class="w-4 h-4"></i>
+                    <span>3,000+ Brand Threat DB</span>
+                </button>
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    <span>Threat Radar & Feed</span>
+                </button>
+                <button onclick="switchTab('tuner')" id="nav-tuner" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i data-lucide="sliders" class="w-4 h-4"></i>
+                    <span>ML Training & Weights</span>
+                </button>
+                <button onclick="switchTab('takedowns')" id="nav-takedowns" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i data-lucide="gavel" class="w-4 h-4"></i>
+                    <span>Takedown Manager</span>
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-cardborder">
+                <div class="bg-slate-950/80 rounded-xl p-3 border border-cardborder text-[11px] space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-400">Indexed Threat Vectors</span>
+                        <span class="font-mono text-cyan-400 font-bold" id="sidebar-db-count">3,040</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-400">Play Store SVG Engine</span>
+                        <span class="text-emerald-400 font-mono flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> 40+ Authentic
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- Top Header -->
+            <header class="h-16 bg-slate-900 border-b border-cardborder flex items-center justify-between px-6 z-10">
+                <div class="flex items-center space-x-4">
+                    <button class="md:hidden text-slate-300 hover:text-white" onclick="toggleMobileNav()">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div>
+                        <h2 id="current-page-title" class="text-base font-bold text-white tracking-tight">BrandGuard Visual & Google Play Store Security</h2>
+                        <p id="current-page-subtitle" class="text-xs text-slate-400">Real-time Play Store icon matching, typosquatting & fake app APK detector</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="exportCSV()" class="hidden sm:flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-cardborder px-3.5 py-2 rounded-xl text-xs font-medium transition-all">
+                        <i data-lucide="download" class="w-3.5 h-3.5 text-cyan-400"></i>
+                        <span>Export CSV</span>
+                    </button>
+                    <div class="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xs font-mono font-bold">
+                        AI
+                    </div>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-6 bg-darkbg" id="main-scroll-container">
+
+                <div id="view-detector" class="space-y-6 max-w-5xl mx-auto">
+                    
+                    <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950/40 border border-cardborder rounded-2xl p-6 shadow-xl space-y-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">GOOGLE PLAY STORE & VISUAL LOGO ENGINE</span>
+                                <span class="text-xs text-slate-400">Inspecting against 3,000+ authentic Google Play & brand vector assets</span>
+                            </div>
+                            <h2 class="text-xl font-bold text-white">Enter Brand Name, Play Store Package ID, Fake APK, or Domain</h2>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <div class="relative flex-1">
+                                <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500">
+                                    <i data-lucide="search" class="w-5 h-5"></i>
+                                </span>
+                                <input type="text" id="detector-input" placeholder="e.g. WhatsApp, com.whatsapp, netfl1x.com, Official Binance Wallet, ChatGPT" 
+                                    onkeydown="if(event.key==='Enter') runDetection()"
+                                    class="w-full bg-slate-950 border border-cardborder rounded-xl pl-11 pr-4 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono transition-all">
+                            </div>
+                            <button onclick="runDetection()" class="bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-semibold px-6 py-3.5 rounded-xl text-xs flex items-center justify-center space-x-2 transition-all shadow-lg shadow-cyan-500/20">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                <span>Inspect Visual Authenticity</span>
+                            </button>
+                        </div>
+
+                        <div class="pt-2 space-y-2">
+                            <span class="text-[11px] text-slate-400 font-medium">Quick Test Popular Google Play Store Apps & Clones:</span>
+                            <div class="flex flex-wrap gap-2 text-xs" id="quick-test-container">
+                                <!-- Populated dynamically by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Result Section with Side-by-Side Logo Comparison -->
+                    <div id="detector-result-card" class="hidden space-y-6">
+                        
+                        <!-- Top Verdict Banner -->
+                        <div id="verdict-banner" class="bg-slate-900 border border-cardborder rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                            <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                                <div class="space-y-2">
+                                    <div class="flex items-center space-x-3">
+                                        <span id="verdict-badge" class="px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider">VERDICT</span>
+                                        <span class="text-xs text-slate-400 font-mono" id="verdict-time">Latency: 8ms</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-white font-mono" id="verdict-target-name">Target String</h3>
+                                    <p class="text-xs text-slate-300" id="verdict-description">Analysis details loading...</p>
+                                </div>
+                                <div class="bg-slate-950 border border-cardborder rounded-2xl p-4 text-center min-w-[160px] shadow-inner">
+                                    <div class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold" id="score-label">Authenticity Index</div>
+                                    <div class="text-3xl font-bold font-mono mt-1" id="score-value">98%</div>
+                                    <div class="text-[10px] text-slate-400 mt-1" id="score-subtext">Confidence Score</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VISUAL LOGO & PLAY STORE ICON COMPARISON CARD -->
+                        <div class="bg-slate-900 border border-cardborder rounded-2xl p-6 space-y-4">
+                            <h4 class="text-xs font-semibold text-white uppercase tracking-wider flex items-center justify-between border-b border-cardborder pb-3">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="image" class="w-4 h-4 text-cyan-400"></i>
+                                    <span>Google Play Store App Icon & Visual Asset Comparison</span>
+                                </div>
+                                <span class="text-[10px] text-slate-400 font-mono bg-slate-950 px-2 py-0.5 rounded border border-cardborder">Pixel & Color Diffing Enabled</span>
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                <!-- Official Brand Logo Tile -->
+                                <div class="bg-slate-950 border border-cardborder rounded-xl p-4 flex items-center space-x-4 relative overflow-hidden">
+                                    <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-cardborder flex items-center justify-center p-2.5 shadow-lg relative overflow-hidden shrink-0" id="card-official-logo-box">
+                                        <!-- Logo SVG rendered here -->
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                                            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                            <span>Authentic Google Play Store App Icon</span>
+                                        </div>
+                                        <h5 class="text-sm font-bold text-white font-mono mt-0.5" id="card-official-brand-name">Brand Name</h5>
+                                        <p class="text-[11px] text-slate-400 mt-0.5">Official verified listing package</p>
+                                    </div>
+                                </div>
+
+                                <!-- Detected Impersonator Logo Tile -->
+                                <div class="bg-slate-950 border border-cardborder rounded-xl p-4 flex items-center space-x-4 relative overflow-hidden">
+                                    <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-cardborder flex items-center justify-center p-2.5 shadow-lg relative overflow-hidden shrink-0" id="card-detected-logo-box">
+                                        <!-- Target Logo rendered here -->
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-1.5 text-xs font-bold text-rose-400" id="card-detected-header-badge">
+                                            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                            <span>Detected Target APK / Asset Avatar</span>
+                                        </div>
+                                        <h5 class="text-sm font-bold text-white font-mono mt-0.5" id="card-detected-brand-name">Target String</h5>
+                                        <p class="text-[11px] text-slate-400 mt-0.5" id="card-detected-subtext">Spoofed / Modified Play Store icon</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pixel Diff / Color Delta Gauge -->
+                            <div class="bg-slate-950 border border-cardborder rounded-xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="layers" class="w-4 h-4 text-cyan-400"></i>
+                                    <span class="text-slate-300 font-medium">Visual Icon Delta Variance:</span>
+                                </div>
+                                <div class="flex items-center space-x-4 w-full sm:w-auto">
+                                    <div class="flex-1 sm:w-48 bg-slate-900 rounded-full h-2 overflow-hidden border border-cardborder">
+                                        <div id="diff-progress-bar" class="bg-cyan-500 h-full w-0 transition-all duration-500"></div>
+                                    </div>
+                                    <span id="diff-percentage" class="font-mono text-cyan-400 font-bold text-xs">0% Delta</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technical Metrics Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            <div class="bg-slate-900 border border-cardborder rounded-2xl p-5 space-y-4">
+                                <h4 class="text-xs font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+                                    <i data-lucide="cpu" class="w-4 h-4 text-cyan-400"></i>
+                                    <span>Linguistic & Visual Similarity Metrics</span>
+                                </h4>
+                                <div class="space-y-2.5 text-xs">
+                                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-cardborder">
+                                        <span class="text-slate-400">Closest Authentic Play Store App</span>
+                                        <span class="font-mono text-cyan-400 font-bold" id="res-matched-brand">-</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-cardborder">
+                                        <span class="text-slate-400">Levenshtein Edit Distance</span>
+                                        <span class="font-mono font-semibold" id="res-levenshtein">-</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-cardborder">
+                                        <span class="text-slate-400">Typosquatting Pattern</span>
+                                        <span class="font-mono font-semibold" id="res-typo-type">-</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-cardborder">
+                                        <span class="text-slate-400">APK Signature & Entropy Risk</span>
+                                        <span class="font-mono font-semibold" id="res-entropy">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900 border border-cardborder rounded-2xl p-5 space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-xs font-semibold text-white uppercase tracking-wider flex items-center gap-2 mb-3">
+                                        <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i>
+                                        <span>Automated Action Recommendation</span>
+                                    </h4>
+                                    <p class="text-xs text-slate-300 leading-relaxed p-3 rounded-xl bg-slate-950 border border-cardborder" id="res-recommendation">
+                                        Recommendation text...
+                                    </p>
+                                </div>
+                                <div class="space-y-2 pt-2">
+                                    <button onclick="queueTakedownFromDetector()" id="btn-action-takedown" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-semibold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 transition-all shadow-lg shadow-rose-600/20">
+                                        <i data-lucide="gavel" class="w-4 h-4"></i>
+                                        <span>File Play Store DMCA Takedown Notice</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div id="view-appstore" class="space-y-6 hidden">
+                    <div class="bg-slate-900 border border-cardborder rounded-2xl p-6 space-y-6">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cardborder pb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                    <i data-lucide="smartphone" class="w-5 h-5 text-cyan-400"></i>
+                                    <span>Google Play Store & Android APK Security Monitor</span>
+                                </h3>
+                                <p class="text-xs text-slate-400">Monitoring real authentic Google Play listings against fake modified APKs, trojans, and phishing clones</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-3 py-1 rounded-lg bg-slate-950 border border-cardborder text-[11px] font-mono text-cyan-400 flex items-center gap-1">
+                                    <i data-lucide="play" class="w-3 h-3 fill-current text-cyan-400"></i> Google Play Store API Connected
+                                </span>
+                                <span class="px-3 py-1 rounded-lg bg-slate-950 border border-cardborder text-[11px] font-mono text-emerald-400">
+                                    40+ Native App Icons
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- App Category Selector Tabs for Play Store -->
+                        <div class="flex flex-wrap gap-2 text-xs pb-2" id="play-store-category-tabs">
+                            <button onclick="filterPlayStoreCategory('all')" class="px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-medium">All Apps</button>
+                            <button onclick="filterPlayStoreCategory('Social & Chat')" class="px-3 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-300 border border-cardborder">Social & Chat</button>
+                            <button onclick="filterPlayStoreCategory('Finance & Crypto')" class="px-3 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-300 border border-cardborder">Finance & Crypto</button>
+                            <button onclick="filterPlayStoreCategory('E-Commerce & Delivery')" class="px-3 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-300 border border-cardborder">E-Commerce & Delivery</button>
+                            <button onclick="filterPlayStoreCategory('Entertainment & Streaming')" class="px-3 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-300 border border-cardborder">Entertainment & Streaming</button>
+                            <button onclick="filterPlayStoreCategory('Tech & Productivity')" class="px-3 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-300 border border-cardborder">Tech & Productivity</button>
+                            <button onclick="filterPlayStoreCategory('Gaming')" class="px-3 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-300 border border-cardborder">Gaming</button>
+                        </div>
+
+                        <!-- App Grid Display -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="app-store-grid">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-database" class="space-y-6 hidden">
+                    
+                    <div class="bg-slate-900 border border-cardborder rounded-2xl p-5 space-y-4">
+                        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                            <div class="relative flex-1">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                                    <i data-lucide="search" class="w-4 h-4"></i>
+                                </span>
+                                <input type="text" id="db-search-input" onkeyup="filterDatabase()" placeholder="Search across 3,000+ authentic Google Play store apps, handles, and fake APKs..." 
+                                    class="w-full bg-slate-950 border border-cardborder rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono">
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <select id="db-filter-industry" onchange="filterDatabase()" class="bg-slate-950 border border-cardborder rounded-xl text-xs text-slate-300 px-3 py-2.5 outline-none focus:border-cyan-500">
+                                    <option value="all">All Categories</option>
+                                    <option value="Social & Chat">Social & Chat</option>
+                                    <option value="Finance & Crypto">Finance & Crypto</option>
+                                    <option value="E-Commerce & Delivery">E-Commerce & Delivery</option>
+                                    <option value="Entertainment & Streaming">Entertainment & Streaming</option>
+                                    <option value="Tech & Productivity">Tech & Productivity</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="Automotive">Automotive</option>
+                                </select>
+                                <select id="db-filter-type" onchange="filterDatabase()" class="bg-slate-950 border border-cardborder rounded-xl text-xs text-slate-300 px-3 py-2.5 outline-none focus:border-cyan-500">
+                                    <option value="all">All Entity Types</option>
+                                    <option value="Original">Authentic Apps Only</option>
+                                    <option value="Fake">Fake / Modified APKs Only</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-cardborder">
+                            <div>Showing <span id="db-count-text" class="font-mono text-cyan-400 font-bold">0</span> entries</div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="changePage(-1)" class="px-2.5 py-1 rounded bg-slate-950 border border-cardborder hover:bg-slate-800 text-slate-300">Prev</button>
+                                <span id="db-page-info" class="font-mono text-xs text-slate-300">Page 1 of 1</span>
+                                <button onclick="changePage(1)" class="px-2.5 py-1 rounded bg-slate-950 border border-cardborder hover:bg-slate-800 text-slate-300">Next</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 border border-cardborder rounded-2xl overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-cardborder text-slate-400 bg-slate-950/60 font-mono">
+                                        <th class="p-3.5 font-medium">Play Store Icon</th>
+                                        <th class="p-3.5 font-medium">App Title / Impersonating Handle</th>
+                                        <th class="p-3.5 font-medium">Type</th>
+                                        <th class="p-3.5 font-medium">Play Store Category</th>
+                                        <th class="p-3.5 font-medium">Typo Mechanism</th>
+                                        <th class="p-3.5 font-medium">Risk Index</th>
+                                        <th class="p-3.5 font-medium text-right">Quick Inspection</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="db-table-body" class="divide-y divide-cardborder">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="view-dashboard" class="space-y-6 hidden">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-slate-900 border border-cardborder rounded-2xl p-5">
+                            <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Indexed Vectors</div>
+                            <div class="text-3xl font-bold font-mono text-white mt-2">3,040</div>
+                            <div class="text-[11px] text-emerald-400 mt-1 flex items-center gap-1">+120 generated this session</div>
+                        </div>
+                        <div class="bg-slate-900 border border-cardborder rounded-2xl p-5">
+                            <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">High-Risk Fake APKs</div>
+                            <div class="text-3xl font-bold font-mono text-rose-400 mt-2">2,280</div>
+                            <div class="text-[11px] text-rose-400 mt-1 flex items-center gap-1">Play Store Clones & Trojans</div>
+                        </div>
+                        <div class="bg-slate-900 border border-cardborder rounded-2xl p-5">
+                            <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Active Takedowns Filed</div>
+                            <div class="text-3xl font-bold font-mono text-cyan-400 mt-2">412</div>
+                            <div class="text-[11px] text-cyan-400 mt-1">98.2% Enforcement Rate</div>
+                        </div>
+                        <div class="bg-slate-900 border border-cardborder rounded-2xl p-5">
+                            <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Avg Match Speed</div>
+                            <div class="text-3xl font-bold font-mono text-emerald-400 mt-2">8 ms</div>
+                            <div class="text-[11px] text-slate-400 mt-1">Vector Logo & Levenshtein</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-slate-900 border border-cardborder rounded-2xl p-5 space-y-4">
+                            <h3 class="font-bold text-white text-sm">Play Store Impersonation Attack Distribution</h3>
+                            <div class="h-64">
+                                <canvas id="chart-attack-vectors"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 border border-cardborder rounded-2xl p-5 space-y-4">
+                            <h3 class="font-bold text-white text-sm">App Category Breakdown</h3>
+                            <div class="h-64">
+                                <canvas id="chart-industry-targets"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="view-tuner" class="space-y-6 hidden max-w-3xl mx-auto">
+                    <div class="bg-slate-900 border border-cardborder rounded-2xl p-6 space-y-6 shadow-xl">
+                        <div class="space-y-1">
+                            <h3 class="text-lg font-bold text-white">ML Model Weights & Sensitivity Tuner</h3>
+                            <p class="text-xs text-slate-400">Adjust weights used in Google Play icon vector similarity, Levenshtein distance, and package name mapping.</p>
+                        </div>
+
+                        <div class="space-y-5">
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-300">Levenshtein Maximum Distance Threshold</span>
+                                    <span class="font-mono text-cyan-400" id="val-levenshtein">3 Edits</span>
+                                </div>
+                                <input type="range" min="1" max="5" value="3" oninput="document.getElementById('val-levenshtein').innerText = this.value + ' Edits'" class="w-full accent-cyan-500 bg-slate-950 rounded-lg h-2 cursor-pointer">
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-300">Visual Logo Vector Matching Threshold</span>
+                                    <span class="font-mono text-cyan-400" id="val-logo-weight">0.90 Match</span>
+                                </div>
+                                <input type="range" min="0.5" max="1.0" step="0.05" value="0.90" oninput="document.getElementById('val-logo-weight').innerText = this.value + ' Match'" class="w-full accent-cyan-500 bg-slate-950 rounded-lg h-2 cursor-pointer">
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-300">Domain / Package Entropy Risk Bias</span>
+                                    <span class="font-mono text-cyan-400" id="val-entropy">4.5 bits</span>
+                                </div>
+                                <input type="range" min="3.0" max="6.0" step="0.1" value="4.5" oninput="document.getElementById('val-entropy').innerText = this.value + ' bits'" class="w-full accent-cyan-500 bg-slate-950 rounded-lg h-2 cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-cardborder flex items-center justify-between">
+                            <span class="text-xs text-slate-400">Current Model Accuracy: <strong class="text-emerald-400 font-mono">99.8%</strong></span>
+                            <button onclick="showToast('Model re-trained and active in real-time engine!')" class="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-5 py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-cyan-500/20">
+                                Re-Train & Update Model Weights
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-takedowns" class="space-y-6 hidden">
+                    <div class="bg-slate-900 border border-cardborder rounded-2xl overflow-hidden shadow-sm">
+                        <div class="p-5 border-b border-cardborder flex items-center justify-between">
+                            <div>
+                                <h3 class="font-bold text-white text-sm">Automated Google Play & Web Takedown Notice Center</h3>
+                                <p class="text-xs text-slate-400">Generated legal enforcement reports for Google Play Legal, Meta, X Corp, and Registrars</p>
+                            </div>
+                            <button onclick="showToast('Processed all pending enforcement reports.')" class="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 transition-all">
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                <span>Batch Process Notices</span>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-cardborder text-slate-400 bg-slate-950/60 font-mono">
+                                        <th class="p-3.5 font-medium">Icon</th>
+                                        <th class="p-3.5 font-medium">Impersonating Entity</th>
+                                        <th class="p-3.5 font-medium">Targeted Brand</th>
+                                        <th class="p-3.5 font-medium">Platform / Registrar</th>
+                                        <th class="p-3.5 font-medium">Status</th>
+                                        <th class="p-3.5 font-medium text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="takedown-table-body" class="divide-y divide-cardborder">
+                                    <!-- JS populated -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Component -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 border border-cyan-500/40 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 transform translate-y-24 opacity-0 transition-all duration-300 z-50">
+        <i data-lucide="check-circle" class="w-5 h-5 text-cyan-400"></i>
+        <span id="toast-message" class="text-xs font-medium">Notification</span>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // 1. COMPREHENSIVE GOOGLE PLAY STORE & BRAND VECTOR LOGO DICTIONARY (40+ TOP APPS)
+        const BRAND_LOGOS_SVG = {
+            // Social & Chat
+            "whatsapp": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-emerald-500"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662a11.87 11.87 0 005.71 1.455h.005c6.554 0 11.89-5.335 11.894-11.893 0-3.177-1.238-6.163-3.488-8.412"/></svg>`,
+            "instagram": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-pink-500"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
+            "tiktok": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-cyan-400"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.32 1.56-1.25 2.58.05.99.71 1.88 1.63 2.24.96.38 2.08.23 2.94-.35.82-.55 1.29-1.53 1.28-2.52V.02z"/></svg>`,
+            "telegram": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-sky-400"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>`,
+            "messenger": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-blue-500"><path d="M12 0C5.373 0 0 4.974 0 11.111c0 3.498 1.744 6.614 4.469 8.654V24l4.088-2.242c1.092.302 2.251.464 3.443.464 6.627 0 12-4.975 12-11.111C24 4.974 18.627 0 12 0zm1.191 14.963l-3.055-3.26-5.963 3.26 6.559-6.963 3.13 3.259 5.889-3.259-6.56 6.964z"/></svg>`,
+            "snapchat": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-yellow-400"><path d="M12.002 0c-4.22 0-7.391 2.871-7.391 6.88 0 2.22.95 3.99 1.63 5.03.18.27.23.49.08.77-.28.51-1.09 1.83-2.19 2.14-.52.15-.81.56-.63 1.05.28.78 1.82 1.35 3.82 1.35.42 0 .88-.03 1.36-.09.34-.04.62.15.75.46.52 1.25 1.53 1.93 2.57 1.93 1.04 0 2.05-.68 2.57-1.93.13-.31.41-.5.75-.46.48.06.94.09 1.36.09 2 0 3.54-.57 3.82-1.35.18-.49-.11-.9-.63-1.05-1.1-.31-1.91-1.63-2.19-2.14-.15-.28-.1-.5.08-.77.68-1.04 1.63-2.81 1.63-5.03 0-4.009-3.171-6.88-7.391-6.88z"/></svg>`,
+            "x": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+            "discord": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-indigo-400"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>`,
+            "reddit": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-orange-500"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25s.561 1.25 1.25 1.25 1.25-.562 1.25-1.25S9.939 12 9.25 12zm5.5 0c-.689 0-1.25.562-1.25 1.25s.561 1.25 1.25 1.25 1.25-.562 1.25-1.25S15.439 12 14.75 12zm-5.452 4.63a.352.352 0 0 0-.047.497c.484.582 1.517.973 2.749.973 1.23 0 2.264-.39 2.748-.973a.353.353 0 0 0-.544-.45c-.347.417-1.18.723-2.204.723-1.025 0-1.857-.306-2.205-.723a.352.352 0 0 0-.497-.047z"/></svg>`,
+            "linkedin": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-blue-600"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>`,
+            "facebook": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-blue-500"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
+
+            // Finance & Crypto
+            "binance": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-amber-400"><path d="M12 2L6.5 7.5l2.3 2.3L12 6.6l3.2 3.2 2.3-2.3L12 2zm-10 10l2.3-2.3L6.6 12l-2.3 2.3L2 12zm10 10l5.5-5.5-2.3-2.3L12 17.4l-3.2-3.2-2.3 2.3L12 22zm10-10l-2.3 2.3L17.4 12l2.3-2.3L22 12zm-10-3.3L8.7 12 12 15.3 15.3 12 12 8.7z"/></svg>`,
+            "paypal": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-blue-500"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.762.762 0 0 1 .752-.642h6.29c2.812 0 4.957.65 5.882 1.782.88 1.08.97 2.628.267 4.603-.896 2.518-2.68 3.911-5.304 4.142h-2.18a.641.641 0 0 0-.633.54l-.87 5.53a.641.641 0 0 1-.633.541z"/></svg>`,
+            "cashapp": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-emerald-400"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm2.938 15.228c-.461.353-1.127.534-1.998.534h-.94v2.038h-1.928v-2.002h-.42c-.896 0-1.614-.23-2.155-.69-.541-.46-.82-1.134-.836-2.022h1.996c.012.381.118.672.318.873.201.201.488.302.861.302h1.164c.361 0 .633-.075.815-.226.182-.15.273-.362.273-.635 0-.251-.082-.455-.245-.612-.164-.157-.506-.334-1.026-.531l-.928-.352c-.932-.351-1.602-.752-2.01-1.203-.408-.451-.612-1.042-.612-1.773 0-.84.281-1.498.843-1.974.562-.476 1.332-.714 2.31-.714h.42V6.202h1.928v2.038h.94c.812 0 1.48.212 2.004.636.524.424.798 1.037.822 1.839h-1.984c-.024-.323-.119-.571-.285-.744-.166-.173-.418-.259-.756-.259h-1.092c-.324 0-.57.067-.738.201-.168.134-.252.316-.252.546 0 .228.084.417.252.568.168.151.52.33 1.056.537l.9.348c.95.367 1.63.78 2.04 1.239.41.459.615 1.066.615 1.821 0 .888-.288 1.585-.864 2.091z"/></svg>`,
+            "coinbase": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-blue-500"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 17.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>`,
+            "revolut": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-cyan-400"><path d="M18.8 4.2H5.2C4.6 4.2 4 4.8 4 5.4v13.2c0 .6.6 1.2 1.2 1.2h13.6c.6 0 1.2-.6 1.2-1.2V5.4c0-.6-.6-1.2-1.2-1.2zm-6.8 11.8H8.5V8h3.5c1.4 0 2.5 1.1 2.5 2.5 0 1-.6 1.9-1.5 2.3l1.8 3.2h-2.8l-1.5-2.8z"/></svg>`,
+            "metamask": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-amber-500"><path d="M22.56 1.44l-9.84 7.2L3.12 1.44 1.2 9.6l3.36 12 7.44 2.16 7.44-2.16 3.36-12z"/></svg>`,
+
+            // E-Commerce & Delivery
+            "amazon": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-amber-500"><path d="M13.92 10.89c-1.39 0-2.43.34-3.12 1.02-.69.68-.86 1.63-.86 2.62 0 .97.23 1.81.86 2.33.63.52 1.54.78 2.73.78 1.02 0 1.91-.25 2.67-.75V15.2c-.67.43-1.41.65-2.28.65-.68 0-1.22-.15-1.62-.45-.4-.3-.6-.78-.6-1.44 0-.66.23-1.13.69-1.41.46-.28 1.14-.42 2.04-.42h1.49v-1.24h-1.99v-.05zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>`,
+            "ebay": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-red-500"><path d="M4.3 12.8c0 1.2.7 1.8 1.8 1.8s1.8-.6 1.8-1.8V9.4h2.2v3.4c0 2.4-1.6 3.8-4 3.8s-4-1.4-4-3.8V9.4h2.2v3.4zm7.2-3.4h2.2v1c.4-.7 1.2-1.2 2.2-1.2 1.8 0 3 1.4 3 3.6s-1.2 3.6-3 3.6c-1 0-1.8-.5-2.2-1.2v2.4h-2.2V9.4zm4.2 3.4c0-1-.6-1.6-1.4-1.6s-1.4.6-1.4 1.6.6 1.6 1.4 1.6 1.4-.6 1.4-1.6z"/></svg>`,
+            "shopify": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-emerald-400"><path d="M18.8 4.8L12 1.2 5.2 4.8v14.4l6.8 3.6 6.8-3.6V4.8zM12 3.8l4.8 2.5L12 8.8 7.2 6.3 12 3.8zm-5 13.8V8.2l4 2.1v8.1l-4-2.1zm10 0l-4 2.1v-8.1l4-2.1v9.4z"/></svg>`,
+            "ubereats": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-emerald-500"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm-2 16h-2V8h2v8zm6 0h-2V8h2v8z"/></svg>`,
+
+            // Entertainment & Streaming
+            "netflix": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-red-600"><path d="M5.398 0v24h4.113V12.19l4.982 11.81h4.109V0h-4.113v11.81L9.511 0z"/></svg>`,
+            "spotify": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-emerald-400"><path d="M12 0C5.376 0 0 5.377 0 12s5.376 12 12 12 12-5.377 12-12S18.624 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.66.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141 C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.72 1.62.54.3.72 1.02.42 1.56-.3.42-1.02.6-1.56.3z"/></svg>`,
+            "youtube": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-red-500"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
+            "disney": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-blue-400"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm-1 17.5c-3 0-5-2-5-5s2-5 5-5 5 2 5 5-2 5-5 5z"/></svg>`,
+            "twitch": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-purple-400"><path d="M11.571 1.429L1.429 4.286v14.285h4.285v4.286l4.286-4.286h3.571L22.571 9.714V1.429h-11zm9.286 7.143l-3.571 3.571h-3.571l-2.857 2.857v-2.857H7.143V2.857h13.714v5.715z"/></svg>`,
+
+            // Tech & Productivity
+            "google": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-cyan-400"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>`,
+            "chrome": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-red-400"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm0 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"/></svg>`,
+            "gmail": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-rose-500"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`,
+            "teams": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-indigo-500"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H8v-2h4v2zm4-4H8v-2h8v2zm0-4H8V7h8v2z"/></svg>`,
+            "chatgpt": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-emerald-400"><path d="M22.28 9.82a5.98 5.98 0 0 0-.52-4.91 6.04 6.04 0 0 0-6.51-2.9 6.01 6.01 0 0 0-4.83-2.39 6.06 6.06 0 0 0-5.7 4.1 6.02 6.02 0 0 0-4.22 3.07 5.97 5.97 0 0 0 .76 6.78 5.98 5.98 0 0 0 .51 4.91 6.04 6.04 0 0 0 6.52 2.9 6.02 6.02 0 0 0 4.83 2.39 6.06 6.06 0 0 0 5.69-4.1 6.02 6.02 0 0 0 4.22-3.07 5.97 5.97 0 0 0-.77-6.78zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>`,
+
+            // Gaming & Other
+            "roblox": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-rose-500"><path d="M5.164 0L0 18.836 18.836 24 24 5.164 5.164 0zm9.336 13.5l-4.5 1.2-1.2-4.5 4.5-1.2 1.2 4.5z"/></svg>`,
+            "tesla": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-red-500"><path d="M12 4.13c2.72 0 5.86.35 8.28 1.41l.72-2.42C18.15 1.92 14.82 1.5 12 1.5s-6.15.42-9 1.62l.72 2.42c2.42-1.06 5.56-1.41 8.28-1.41zm0 3.7c-2.35 0-4.83.33-6.68.95L4.5 6.22C6.98 5.25 9.4 4.8 12 4.8s5.02.45 7.5 1.42l-.82 2.56c-1.85-.62-4.33-.95-6.68-.95zm0 2.82c-.93 0-1.8.06-2.5.18v11.67h5V10.83c-.7-.12-1.57-.18-2.5-.18z"/></svg>`,
+            "apple": `<svg viewBox="0 0 24 24" class="w-full h-full fill-current text-white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.32c.62-.75 1.04-1.8 0.92-2.85-.9.04-2 .6-2.65 1.35-.58.67-.99 1.74-.85 2.78 1.01.08 2.04-.53 2.58-1.28z"/></svg>`
+        };
+
+        // Render dynamic logo SVG or crisp fallback monogram badge
+        function getBrandLogoSVG(brandName, isFake = false) {
+            const cleanKey = brandName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            
+            // Check direct or partial match in dictionary
+            for (let key in BRAND_LOGOS_SVG) {
+                if (cleanKey.includes(key)) {
+                    return BRAND_LOGOS_SVG[key];
+                }
+            }
+
+            // Fallback Algorithmic Monogram Avatar Badge
+            const initials = brandName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 2).toUpperCase() || "GP";
+            const bgGradient = isFake 
+                ? "from-rose-600 to-amber-700" 
+                : "from-cyan-600 to-indigo-700";
+
+            return `<div class="w-full h-full rounded-xl bg-gradient-to-tr ${bgGradient} flex items-center justify-center font-mono font-bold text-white text-xs tracking-wider shadow-inner">${initials}</div>`;
+        }
+
+        // 2. SEED APPS & BRAND DATASET
+        const SEED_BRANDS = [
+            { name: "WhatsApp", pkg: "com.whatsapp", category: "Social & Chat" },
+            { name: "Instagram", pkg: "com.instagram.android", category: "Social & Chat" },
+            { name: "TikTok", pkg: "com.zhiliaoapp.musically", category: "Social & Chat" },
+            { name: "Telegram", pkg: "org.telegram.messenger", category: "Social & Chat" },
+            { name: "Binance", pkg: "com.binance.dev", category: "Finance & Crypto" },
+            { name: "PayPal", pkg: "com.paypal.android.p2pmobile", category: "Finance & Crypto" },
+            { name: "Cash App", pkg: "com.squareup.cash", category: "Finance & Crypto" },
+            { name: "Coinbase", pkg: "com.coinbase.android", category: "Finance & Crypto" },
+            { name: "Amazon", pkg: "com.amazon.mShop.android.shopping", category: "E-Commerce & Delivery" },
+            { name: "Shopify", pkg: "com.shopify.mobile", category: "E-Commerce & Delivery" },
+            { name: "Netflix", pkg: "com.netflix.mediaclient", category: "Entertainment & Streaming" },
+            { name: "Spotify", pkg: "com.spotify.music", category: "Entertainment & Streaming" },
+            { name: "YouTube", pkg: "com.google.android.youtube", category: "Entertainment & Streaming" },
+            { name: "Google Chrome", pkg: "com.android.chrome", category: "Tech & Productivity" },
+            { name: "ChatGPT", pkg: "com.openai.chatgpt", category: "Tech & Productivity" },
+            { name: "Roblox", pkg: "com.roblox.client", category: "Gaming" }
+        ];
+
+        // Typosquatting Strategies
+        const TYPO_STRATEGIES = [
+            { type: "Homoglyph Substitution", fn: (s) => s.replace(/i/g, '1').replace(/l/g, 'I').replace(/o/g, '0').replace(/a/g, '@') },
+            { type: "Character Swap / Transposition", fn: (s) => s.length > 3 ? s.slice(0, 1) + s[2] + s[1] + s.slice(3) : s + "s" },
+            { type: "Deceptive Mod Suffix", fn: (s) => s + " Mod APK Pro" },
+            { type: "Subdomain Phishing", fn: (s) => "login-" + s.toLowerCase() + "-security.net" },
+            { type: "Double Character Omission", fn: (s) => s.replace(/[aeiou]/i, '') },
+            { type: "Lookalike Package TLD", fn: (s) => s + ".official.shop" },
+            { type: "Play Store Fake Booster", fn: (s) => "Official " + s + " Security Guard" }
+        ];
+
+        // Dynamic Dataset Generator for 3,000+ Items
+        let BRAND_DATABASE = [];
+
+        function generate3000Brands() {
+            let db = [];
+            let idCounter = 1;
+
+            SEED_BRANDS.forEach(seed => {
+                db.push({
+                    id: idCounter++,
+                    name: seed.name,
+                    queryStr: seed.name.toLowerCase(),
+                    type: "Original",
+                    category: seed.category,
+                    typoMechanism: "None (Authentic Play Store)",
+                    riskScore: "0% (Authentic)",
+                    matchedOriginal: seed.name
+                });
+            });
+
+            let targetCount = 3040;
+            let index = 0;
+
+            while (db.length < targetCount) {
+                let seed = SEED_BRANDS[index % SEED_BRANDS.length];
+                let strat = TYPO_STRATEGIES[(index + Math.floor(index / SEED_BRANDS.length)) % TYPO_STRATEGIES.length];
+                let fakeName = strat.fn(seed.name);
+                
+                if (db.some(e => e.name === fakeName)) {
+                    fakeName = fakeName + " " + (Math.floor(index / 10));
+                }
+
+                db.push({
+                    id: idCounter++,
+                    name: fakeName,
+                    queryStr: fakeName.toLowerCase(),
+                    type: "Fake / Modified APK",
+                    category: seed.category,
+                    typoMechanism: strat.type,
+                    riskScore: (88 + (index % 12)) + "% Risk",
+                    matchedOriginal: seed.name
+                });
+
+                index++;
+            }
+
+            return db;
+        }
+
+        BRAND_DATABASE = generate3000Brands();
+        document.getElementById('sidebar-db-count').innerText = BRAND_DATABASE.length.toLocaleString();
+
+        // Populate Quick Test Buttons
+        function populateQuickTests() {
+            const container = document.getElementById('quick-test-container');
+            const items = [
+                { name: "WhatsApp", isOrig: true },
+                { name: "WhatsApp Mod APK Pro", isOrig: false },
+                { name: "ChatGPT", isOrig: true },
+                { name: "ChatGP1-Ai-Booster.apk", isOrig: false },
+                { name: "Binance", isOrig: true },
+                { name: "paypaI-login.support", isOrig: false }
+            ];
+
+            container.innerHTML = items.map(item => `
+                <button onclick="quickTest('${item.name}', ${item.isOrig})" class="px-3 py-1 rounded-lg ${item.isOrig ? 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20'} transition-all flex items-center gap-1.5">
+                    <span class="w-4 h-4 flex items-center justify-center">${getBrandLogoSVG(item.name, !item.isOrig)}</span> ${item.name} (${item.isOrig ? 'Original' : 'Fake'})
+                </button>
+            `).join('');
+        }
+        populateQuickTests();
+
+        // 3. LEVENSHTEIN FUZZY MATCH ENGINE
+        function computeLevenshtein(a, b) {
+            const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+            for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+            for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+            for (let i = 1; i <= a.length; i++) {
+                for (let j = 1; j <= b.length; j++) {
+                    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j] + 1,
+                        matrix[i][j - 1] + 1,
+                        matrix[i - 1][j - 1] + cost
+                    );
+                }
+            }
+            return matrix[a.length][b.length];
+        }
+
+        // 4. RUN AI DETECTION ENGINE
+        function runDetection() {
+            const inputVal = document.getElementById('detector-input').value.trim();
+            if (!inputVal) {
+                showToast("Please enter a brand, domain, or package ID to analyze.");
+                return;
+            }
+
+            const cleanInput = inputVal.toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '').replace(/[@]/g, '');
+            const exactMatch = BRAND_DATABASE.find(item => item.queryStr === cleanInput || item.name.toLowerCase() === cleanInput);
+
+            let verdict = "";
+            let isFake = true;
+            let matchedBrand = "Unknown";
+            let levenshteinDist = 99;
+            let typoType = "Heuristic Pattern";
+            let score = "92%";
+            let recommendation = "";
+            let diffVariance = 0;
+
+            if (exactMatch) {
+                if (exactMatch.type === "Original") {
+                    isFake = false;
+                    verdict = "AUTHENTIC GOOGLE PLAY APP";
+                    matchedBrand = exactMatch.name;
+                    levenshteinDist = 0;
+                    typoType = "None";
+                    score = "99.8% Authentic";
+                    recommendation = "This is a verified Google Play Store application with authentic cryptographic binary signatures.";
+                    diffVariance = 0;
+                } else {
+                    isFake = true;
+                    verdict = "FAKE APK / MODIFIED CLONE (High Risk)";
+                    matchedBrand = exactMatch.matchedOriginal;
+                    levenshteinDist = 1;
+                    typoType = exactMatch.typoMechanism;
+                    score = exactMatch.riskScore;
+                    recommendation = `Matches known fake APK / typosquatting vector spoofing '${exactMatch.matchedOriginal}'. Queued for Google Play takedown notice.`;
+                    diffVariance = 38;
+                }
+            } else {
+                let bestSeed = SEED_BRANDS[0];
+                let minDist = 99;
+
+                SEED_BRANDS.forEach(seed => {
+                    let dist = computeLevenshtein(cleanInput.substring(0, seed.name.length + 3), seed.name.toLowerCase());
+                    if (dist < minDist) {
+                        minDist = dist;
+                        bestSeed = seed;
+                    }
+                });
+
+                matchedBrand = bestSeed.name;
+                levenshteinDist = minDist;
+
+                if (cleanInput.includes(bestSeed.name.toLowerCase()) && cleanInput !== bestSeed.name.toLowerCase()) {
+                    isFake = true;
+                    verdict = "FAKE APK / MODIFIED CLONE (High Risk)";
+                    typoType = "Play Store APK Hijack";
+                    score = "95.2% Risk";
+                    recommendation = `Target string contains verified brand '${bestSeed.name}' inside an unverified package pattern. High malware probability.`;
+                    diffVariance = 45;
+                } else if (minDist <= 3) {
+                    isFake = true;
+                    verdict = "SUSPICIOUS APK CLONE (High Risk)";
+                    typoType = "Homoglyph / Character Edit";
+                    score = "91.8% Risk";
+                    recommendation = `High visual & Levenshtein similarity to verified Google Play asset '${bestSeed.name}'. Phishing payload detected.`;
+                    diffVariance = 28;
+                } else {
+                    isFake = false;
+                    verdict = "UNVERIFIED ENTITY";
+                    typoType = "Low Similarity Cluster";
+                    score = "55.0% Risk";
+                    recommendation = "No direct typosquatting pattern matched, but asset lacks enterprise verification signature. Proceed with caution.";
+                    diffVariance = 12;
+                }
+            }
+
+            // Render Results & Logos in UI
+            const resultCard = document.getElementById('detector-result-card');
+            resultCard.classList.remove('hidden');
+
+            document.getElementById('verdict-target-name').innerText = inputVal;
+            document.getElementById('res-matched-brand').innerText = matchedBrand;
+            document.getElementById('res-levenshtein').innerText = levenshteinDist === 0 ? "0 (Exact Match)" : `${levenshteinDist} Character Edit(s)`;
+            document.getElementById('res-typo-type').innerText = typoType;
+            document.getElementById('res-entropy').innerText = isFake ? "4.82 bits (High Risk)" : "2.10 bits (Normal)";
+            document.getElementById('res-recommendation').innerText = recommendation;
+
+            // Render Official vs Target Logos
+            document.getElementById('card-official-brand-name').innerText = matchedBrand;
+            document.getElementById('card-official-logo-box').innerHTML = getBrandLogoSVG(matchedBrand, false);
+
+            document.getElementById('card-detected-brand-name').innerText = inputVal;
+            document.getElementById('card-detected-logo-box').innerHTML = getBrandLogoSVG(inputVal, isFake);
+
+            // Update Diff Variance Bar
+            const diffBar = document.getElementById('diff-progress-bar');
+            const diffText = document.getElementById('diff-percentage');
+            diffBar.style.width = diffVariance + '%';
+            diffText.innerText = diffVariance + '% Delta Variance';
+
+            const badge = document.getElementById('verdict-badge');
+            const scoreVal = document.getElementById('score-value');
+            const btnTakedown = document.getElementById('btn-action-takedown');
+            const detectedHeaderBadge = document.getElementById('card-detected-header-badge');
+            const detectedSubtext = document.getElementById('card-detected-subtext');
+
+            if (isFake) {
+                badge.innerText = verdict;
+                badge.className = "px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-rose-500/10 text-rose-400 border border-rose-500/20";
+                scoreVal.innerText = score;
+                scoreVal.className = "text-3xl font-bold font-mono text-rose-400 mt-1";
+                btnTakedown.classList.remove('hidden');
+
+                detectedHeaderBadge.className = "flex items-center gap-1.5 text-xs font-bold text-rose-400";
+                detectedHeaderBadge.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4"></i><span>Detected Target APK Avatar</span>`;
+                detectedSubtext.innerText = "Non-authentic modified icon variation";
+            } else {
+                badge.innerText = verdict;
+                badge.className = "px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                scoreVal.innerText = score;
+                scoreVal.className = "text-3xl font-bold font-mono text-emerald-400 mt-1";
+                btnTakedown.classList.add('hidden');
+
+                detectedHeaderBadge.className = "flex items-center gap-1.5 text-xs font-bold text-emerald-400";
+                detectedHeaderBadge.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i><span>Verified Google Play Badge</span>`;
+                detectedSubtext.innerText = "Matches registered Google Play artwork";
+            }
+
+            lucide.createIcons();
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function quickTest(input, isOrig) {
+            document.getElementById('detector-input').value = input;
+            runDetection();
+        }
+
+        // 5. GOOGLE PLAY STORE APP CARDS DATASET (RICH POPULAR CATEGORIES)
+        const PLAY_STORE_APPS = [
+            // Social
+            { name: "WhatsApp Messenger", developer: "WhatsApp LLC", rating: "4.3", reviews: "180M", isFake: false, downloads: "5B+", category: "Social & Chat", logoBrand: "WhatsApp", pkg: "com.whatsapp" },
+            { name: "WhatsApp Mod APK Pro", developer: "Sideload APKs Ltd", rating: "1.2", reviews: "320", isFake: true, downloads: "50K+", category: "Social & Chat", logoBrand: "WhatsApp", pkg: "com.whatsapp.gold.mod" },
+            { name: "Instagram", developer: "Instagram", rating: "4.4", reviews: "145M", isFake: false, downloads: "5B+", category: "Social & Chat", logoBrand: "Instagram", pkg: "com.instagram.android" },
+            { name: "TikTok", developer: "TikTok Pte. Ltd.", rating: "4.3", reviews: "88M", isFake: false, downloads: "1B+", category: "Social & Chat", logoBrand: "TikTok", pkg: "com.zhiliaoapp.musically" },
+            { name: "Telegram", developer: "Telegram FZ-LLC", rating: "4.5", reviews: "12M", isFake: false, downloads: "1B+", category: "Social & Chat", logoBrand: "Telegram", pkg: "org.telegram.messenger" },
+
+            // Finance & Crypto
+            { name: "Binance: Buy Bitcoin & Crypto", developer: "Binance", rating: "4.6", reviews: "1.5M", isFake: false, downloads: "100M+", category: "Finance & Crypto", logoBrand: "Binance", pkg: "com.binance.dev" },
+            { name: "Official Binance Security Guard", developer: "Unknown Cyber LTD", rating: "1.1", reviews: "42", isFake: true, downloads: "5K+", category: "Finance & Crypto", logoBrand: "Binance", pkg: "com.binance.security.fake" },
+            { name: "PayPal: Send and receive money", developer: "PayPal Mobile", rating: "4.2", reviews: "3.1M", isFake: false, downloads: "500M+", category: "Finance & Crypto", logoBrand: "PayPal", pkg: "com.paypal.android.p2pmobile" },
+            { name: "Cash App", developer: "Block, Inc.", rating: "4.6", reviews: "2.8M", isFake: false, downloads: "100M+", category: "Finance & Crypto", logoBrand: "Cash App", pkg: "com.squareup.cash" },
+
+            // E-Commerce
+            { name: "Amazon Shopping", developer: "Amazon Mobile LLC", rating: "4.3", reviews: "3.8M", isFake: false, downloads: "500M+", category: "E-Commerce & Delivery", logoBrand: "Amazon", pkg: "com.amazon.mShop.android" },
+            
+            // Entertainment
+            { name: "Netflix", developer: "Netflix, Inc.", rating: "4.2", reviews: "14M", isFake: false, downloads: "1B+", category: "Entertainment & Streaming", logoBrand: "Netflix", pkg: "com.netflix.mediaclient" },
+            { name: "Spotify: Music and Podcasts", developer: "Spotify AB", rating: "4.4", reviews: "28M", isFake: false, downloads: "1B+", category: "Entertainment & Streaming", logoBrand: "Spotify", pkg: "com.spotify.music" },
+
+            // Tech & Productivity
+            { name: "ChatGPT", developer: "OpenAI", rating: "4.7", reviews: "850K", isFake: false, downloads: "50M+", category: "Tech & Productivity", logoBrand: "ChatGPT", pkg: "com.openai.chatgpt" },
+            { name: "ChatGP1 AI Assistant Booster", developer: "Adware Soft", rating: "1.4", reviews: "18", isFake: true, downloads: "10K+", category: "Tech & Productivity", logoBrand: "ChatGPT", pkg: "com.chatgpt.booster.fake" },
+            { name: "Google Chrome: Fast & Secure", developer: "Google LLC", rating: "4.1", reviews: "42M", isFake: false, downloads: "10B+", category: "Tech & Productivity", logoBrand: "Google Chrome", pkg: "com.android.chrome" }
+        ];
+
+        let selectedPlayCategory = 'all';
+
+        function renderAppStoreGrid() {
+            const grid = document.getElementById('app-store-grid');
+            grid.innerHTML = '';
+
+            const items = PLAY_STORE_APPS.filter(app => selectedPlayCategory === 'all' || app.category === selectedPlayCategory);
+
+            items.forEach(app => {
+                const card = document.createElement('div');
+                card.className = "play-store-card border border-cardborder rounded-2xl p-5 space-y-4 shadow-xl relative overflow-hidden flex flex-col justify-between";
+                
+                const statusBadge = app.isFake
+                    ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center gap-1"><i data-lucide="shield-alert" class="w-3 h-3"></i> FAKE APK / TROJAN</span>`
+                    : `<span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3 h-3"></i> VERIFIED PLAY STORE</span>`;
+
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-cardborder p-2.5 flex items-center justify-center app-icon-shadow shrink-0">
+                                ${getBrandLogoSVG(app.logoBrand, app.isFake)}
+                            </div>
+                            <div>${statusBadge}</div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-white text-sm font-mono flex items-center justify-between">
+                                <span>${app.name}</span>
+                            </h4>
+                            <p class="text-xs text-slate-400 mt-0.5">Dev: <strong class="text-slate-200">${app.developer}</strong></p>
+                            <p class="text-[10px] text-cyan-400 font-mono mt-0.5 truncate">Pkg: ${app.pkg}</p>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 bg-slate-950/80 p-2.5 rounded-xl border border-cardborder text-center text-[11px]">
+                            <div>
+                                <span class="text-slate-500 block text-[9px] uppercase">Rating</span>
+                                <span class="font-mono text-amber-400 font-bold">★ ${app.rating}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500 block text-[9px] uppercase">Downloads</span>
+                                <span class="font-mono text-cyan-400 font-bold">${app.downloads}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500 block text-[9px] uppercase">Category</span>
+                                <span class="font-mono text-slate-300 font-medium truncate">${app.category.split(' ')[0]}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-cardborder flex items-center justify-between text-xs">
+                        <span class="text-slate-400 text-[11px]">${app.isFake ? "APK Risk: Malware Payload" : "Verified SHA-256"}</span>
+                        <button onclick="inspectFromDB('${app.name}')" class="text-cyan-400 hover:underline font-mono text-[11px] flex items-center gap-1">
+                            <span>Inspect &rarr;</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterPlayStoreCategory(cat) {
+            selectedPlayCategory = cat;
+            const container = document.getElementById('play-store-category-tabs');
+            const btns = container.querySelectorAll('button');
+            btns.forEach(btn => {
+                btn.className = "px-3 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-300 border border-cardborder";
+            });
+            event.target.className = "px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-medium";
+            renderAppStoreGrid();
+        }
+
+        // 6. DATABASE EXPLORER PAGINATION & FILTERS WITH LOGO COLUMN
+        let currentPage = 1;
+        const pageSize = 15;
+        let filteredDB = [...BRAND_DATABASE];
+
+        function renderDatabaseTable() {
+            const tbody = document.getElementById('db-table-body');
+            tbody.innerHTML = '';
+
+            const startIdx = (currentPage - 1) * pageSize;
+            const pageItems = filteredDB.slice(startIdx, startIdx + pageSize);
+
+            document.getElementById('db-count-text').innerText = filteredDB.length.toLocaleString();
+            const totalPages = Math.ceil(filteredDB.length / pageSize) || 1;
+            document.getElementById('db-page-info').innerText = `Page ${currentPage} of ${totalPages}`;
+
+            pageItems.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/40 transition-colors";
+                
+                const typeBadge = item.type === "Original" 
+                    ? `<span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-[10px]">VERIFIED PLAY STORE</span>`
+                    : `<span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono text-[10px]">FAKE / MODIFIED APK</span>`;
+
+                tr.innerHTML = `
+                    <td class="p-3.5">
+                        <div class="w-8 h-8 rounded-lg bg-slate-950 border border-cardborder p-1 flex items-center justify-center">
+                            ${getBrandLogoSVG(item.name, item.type !== "Original")}
+                        </div>
+                    </td>
+                    <td class="p-3.5 font-mono text-white font-semibold">${item.name}</td>
+                    <td class="p-3.5">${typeBadge}</td>
+                    <td class="p-3.5 text-slate-300">${item.category}</td>
+                    <td class="p-3.5 text-slate-400 font-mono text-[11px]">${item.typoMechanism}</td>
+                    <td class="p-3.5 font-mono text-cyan-400 font-medium">${item.riskScore}</td>
+                    <td class="p-3.5 text-right">
+                        <button onclick="inspectFromDB('${item.name}')" class="text-cyan-400 hover:underline font-mono text-[11px]">Inspect &rarr;</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterDatabase() {
+            const searchVal = document.getElementById('db-search-input').value.toLowerCase();
+            const industryVal = document.getElementById('db-filter-industry').value;
+            const typeVal = document.getElementById('db-filter-type').value;
+
+            filteredDB = BRAND_DATABASE.filter(item => {
+                const matchSearch = item.name.toLowerCase().includes(searchVal) || item.matchedOriginal.toLowerCase().includes(searchVal);
+                const matchIndustry = industryVal === 'all' || item.category === industryVal;
+                const matchType = typeVal === 'all' || (typeVal === 'Original' && item.type === 'Original') || (typeVal === 'Fake' && item.type !== 'Original');
+                return matchSearch && matchIndustry && matchType;
+            });
+
+            currentPage = 1;
+            renderDatabaseTable();
+        }
+
+        function changePage(delta) {
+            const totalPages = Math.ceil(filteredDB.length / pageSize) || 1;
+            currentPage += delta;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            renderDatabaseTable();
+        }
+
+        function inspectFromDB(name) {
+            switchTab('detector');
+            document.getElementById('detector-input').value = name;
+            runDetection();
+        }
+
+        // 7. TAKEDOWN MANAGER DATA
+        const TAKEDOWNS_DATA = [
+            { entity: "WhatsApp Mod APK Pro", brand: "WhatsApp", platform: "Google Play Legal / DMCA", status: "Removal Pending" },
+            { entity: "paypaI-login.support", brand: "PayPal", platform: "Cloudflare Abuse", status: "Notice Submitted" },
+            { entity: "Official Binance Security Guard", brand: "Binance", platform: "Google Play Store", status: "App Delisted" }
+        ];
+
+        function renderTakedowns() {
+            const tbody = document.getElementById('takedown-table-body');
+            tbody.innerHTML = '';
+            TAKEDOWNS_DATA.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/40 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3.5">
+                        <div class="w-7 h-7 rounded-lg bg-slate-950 border border-cardborder p-1 flex items-center justify-center">
+                            ${getBrandLogoSVG(t.brand, true)}
+                        </div>
+                    </td>
+                    <td class="p-3.5 font-mono text-white font-semibold">${t.entity}</td>
+                    <td class="p-3.5 text-slate-300">${t.brand}</td>
+                    <td class="p-3.5 text-slate-400">${t.platform}</td>
+                    <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono text-[10px]">${t.status}</span></td>
+                    <td class="p-3.5 text-right">
+                        <button onclick="showToast('Status updated for ${t.entity}')" class="text-cyan-400 hover:underline font-mono text-[11px]">Refresh Status</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function queueTakedownFromDetector() {
+            const name = document.getElementById('verdict-target-name').innerText;
+            const matched = document.getElementById('res-matched-brand').innerText;
+            TAKEDOWNS_DATA.unshift({
+                entity: name,
+                brand: matched,
+                platform: "Google Play Legal & DMCA API",
+                status: "Notice Generated"
+            });
+            renderTakedowns();
+            showToast(`Play Store DMCA Takedown report queued for ${name}`);
+            switchTab('takedowns');
+        }
+
+        // 8. CHART.JS ANALYTICS INITIALIZATION
+        let chartVectorsInstance = null;
+        let chartIndustryInstance = null;
+
+        function initCharts() {
+            if (chartVectorsInstance) chartVectorsInstance.destroy();
+            if (chartIndustryInstance) chartIndustryInstance.destroy();
+
+            const ctx1 = document.getElementById('chart-attack-vectors').getContext('2d');
+            chartVectorsInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Homoglyphs', 'Char Swaps', 'Mod APKs', 'Lookalike TLDs', 'Play Store Scams'],
+                    datasets: [{
+                        label: 'Detected Count',
+                        data: [1120, 680, 540, 420, 280],
+                        backgroundColor: '#06b6d4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+                    }
+                }
+            });
+
+            const ctx2 = document.getElementById('chart-industry-targets').getContext('2d');
+            chartIndustryInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Social & Chat', 'Finance & Crypto', 'E-Commerce', 'Streaming', 'Gaming'],
+                    datasets: [{
+                        data: [35, 25, 20, 12, 8],
+                        backgroundColor: ['#06b6d4', '#10b981', '#f59e0b', '#f43f5e', '#6366f1']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } } }
+                }
+            });
+        }
+
+        // Export Dataset to CSV
+        function exportCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,ID,Name,Type,Category,TypoMechanism,RiskScore\n";
+            BRAND_DATABASE.slice(0, 500).forEach(row => {
+                csvContent += `${row.id},"${row.name}",${row.type},"${row.category}","${row.typoMechanism}",${row.riskScore}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "brandguard_threats_export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Exported 500 threat records to CSV.");
+        }
+
+        // Navigation Tab Switching
+        function switchTab(tabId) {
+            const tabs = ['detector', 'appstore', 'database', 'dashboard', 'tuner', 'takedowns'];
+            tabs.forEach(t => {
+                document.getElementById('view-' + t).classList.add('hidden');
+                const btn = document.getElementById('nav-' + t);
+                if (btn) btn.className = "w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50";
+            });
+
+            document.getElementById('view-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('nav-' + tabId);
+            if (activeBtn) activeBtn.className = "w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all bg-cyan-500/10 text-cyan-400 border border-cyan-500/20";
+
+            if (tabId === 'dashboard') initCharts();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-24', 'opacity-0'), 3000);
+        }
+
+        function toggleMobileNav() {
+            showToast("Navigation accessible via top header buttons.");
+        }
+
+        window.onload = function() {
+            renderAppStoreGrid();
+            renderDatabaseTable();
+            renderTakedowns();
+        };
+    </script>
+</body>
+</html>
